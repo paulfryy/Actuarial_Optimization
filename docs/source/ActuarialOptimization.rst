@@ -7,10 +7,10 @@ ActuarialOptimization package
 This page contains the contents of the ActuarialOptimization module, along with a full code example at the :ref:`toBottom`. 
 
 
-ActuarialOptimization's module
+ManualOptimization module
 ------------------------------
 
-.. automodule:: ActuarialOptimization.ActuarialOptimization
+.. automodule:: ActuarialOptimization.ManualOptimization
     :members:
     :undoc-members:
     :show-inheritance:
