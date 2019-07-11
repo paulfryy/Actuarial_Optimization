@@ -322,7 +322,7 @@ class Optimize:
     def run(self):
         """
         Runs the `differential_evolution <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution>`_
-        minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected. **Runtime is dependent on number of factors being optimized. Possible to take 1+ hours**
+        minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected. **Runtime is dependent on number of factors being optimized. Possible to take multiple hours.**
 
         :return: Tuple of the a dictionary containing variables and their factors, along with minimized absolute deviation and AE.
 
