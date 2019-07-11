@@ -326,6 +326,10 @@ class Optimize:
         **Note: When using ``Optimize.run()``, it should be assigned as follows.**
 
         ``final_dictionary, endingAE, endingAbsDev = myOptimize.run()``
+        
+        **IMPORTANT** The source file is set to only let the AE deviate within 10%. To change this, enter the source file and change the line 
+        ``if new_AE < self.options.data._initialAE * 0.9 or new_AE > self.options.data._initialAE * 1.1:`` in the :meth:`abs_dev` method to whatever constraints wanted.
+        
         """
 
         final_dict = {}
