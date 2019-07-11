@@ -84,7 +84,7 @@ be achieved if these factors had been in place. Lastly, the third variable is th
 at the end of the optimization (This is what is being minimized).
 
 **Note:** There is a lot of excluded output from myOptimize.run() that is printed in the console. It has been excluded for increased
-readability in this tutorial, yet may be useful in context.
+readability in this tutorial, yet may be useful in context. **This part of the code can run for a while, depending on the number of factors being optimized**.
 
 .. code-block:: python
        :emphasize-lines: 3,5,7
