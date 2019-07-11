@@ -21,7 +21,7 @@ list of paths in which it looks for packages.
 
 .. code-block:: python
 
-       >>> sys.path.append(r'C:\Users\paufry\PycharmProjects\ActuarialOptimization\scripts\ActuarialOptimization')
+       >>> sys.path.append(r'C:\...\scripts\ActuarialOptimization')
        >>> import ManualOptimizationAE as mo
 
 Now,  `Pandas <https://pandas.pydata.org/>`_ is used to read the data in from an excel file, and save it as a ``DataFrame`` under the the ``mydata`` variable name.
