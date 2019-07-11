@@ -323,7 +323,7 @@ class Optimize:
 
         :return: Tuple of the a dictionary containing variables and their factors, along with minimized absolute deviation and AE.
 
-        **Note: When using ``Optimize.run()``, it should be assigned as follows.**
+        **Note: When using** ``Optimize.run()``, **it should be assigned as follows.**
 
         ``final_dictionary, endingAE, endingAbsDev = myOptimize.run()``
         
