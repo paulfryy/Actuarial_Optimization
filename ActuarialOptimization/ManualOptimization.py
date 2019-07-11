@@ -229,6 +229,10 @@ class Optimize:
         self.__checkCredibility()
     def __checkCredibility(self):
         if self.credibility and self.lifeYears:
+            try:
+                self.options.data.df[self.lifeYears]
+            except KeyError:
+                raise KeyError(self.lifeYears+" is not a valid column name.")
             self.__createCredibility()
         else:
             self.bounds_lower = {}
