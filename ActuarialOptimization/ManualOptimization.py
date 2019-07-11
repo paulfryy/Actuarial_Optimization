@@ -231,9 +231,9 @@ class Optimize:
         if self.credibility and self.lifeYears:
             self.__createCredibility()
         else:
+            self.bounds_lower = {}
+            self.bounds_upper = {}
             for var in self.options.data.vars:
-                self.bounds_lower = {}
-                self.bounds_upper = {}
                 self.bounds_lower[var]=[0.8]*len(self.options.data.levels[var])
                 self.bounds_upper[var]=[1.2]*len(self.options.data.levels[var])
 
@@ -321,14 +321,10 @@ class Optimize:
         minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected.
 
         :return: Tuple of the a dictionary containing variables and their factors, along with minimized absolute deviation and AE.
-        :rtype: tuple
-        **Note: When using** ``Optimize.run()``, **it should be assigned as follows.**
+
+        **Note: When using ``Optimize.run()``, it should be assigned as follows.**
 
         ``final_dictionary, endingAE, endingAbsDev = myOptimize.run()``
-        
-        **IMPORTANT** The source file is set to only let the AE deviate within 10%. To change this, enter the source file and change the line 
-        ``if new_AE < self.options.data._initialAE * 0.9 or new_AE > self.options.data._initialAE * 1.1:`` in the :meth:`abs_dev` method to whatever constraints wanted.
-        
         """
 
         final_dict = {}
