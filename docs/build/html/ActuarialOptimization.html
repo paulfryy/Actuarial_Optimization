@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ActuarialOptimization package &mdash; Actuarial Optimization 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial" href="Tutorial.html" />
+    <link rel="prev" title="ActuarialOptimization" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Actuarial Optimization
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ActuarialOptimization package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-ActuarialOptimization.ActuarialOptimization">ActuarialOptimization’s module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-example">Code Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Full Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Actuarial Optimization</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">ActuarialOptimization</a> &raquo;</li>
+        
+      <li>ActuarialOptimization package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ActuarialOptimization.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="actuarialoptimization-package">
+<span id="actopt"></span><h1>ActuarialOptimization package<a class="headerlink" href="#actuarialoptimization-package" title="Permalink to this headline">¶</a></h1>
+<p>This page contains the contents of the ActuarialOptimization module, along with a full code example at the <a class="reference internal" href="#tobottom"><span class="std std-ref">Code Example</span></a>.</p>
+<div class="section" id="module-ActuarialOptimization.ActuarialOptimization">
+<span id="actuarialoptimization-s-module"></span><h2>ActuarialOptimization’s module<a class="headerlink" href="#module-ActuarialOptimization.ActuarialOptimization" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ActuarialOptimization.ActuarialOptimization.Data">
+<em class="property">class </em><code class="descclassname">ActuarialOptimization.ActuarialOptimization.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>df</em>, <em>variables</em>, <em>actual</em>, <em>expected</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ActuarialOptimization/ActuarialOptimization.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ActuarialOptimization.ActuarialOptimization.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data class used in optimization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html">Pandas DataFrame</a>) – The <cite>pandas</cite> dataframe containing final filtered data. Note: Data should already be scrubbed, containing NaNs can cause problems further down the line.
+best practice is to already subset data on preliminary conditions.</li>
+<li><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – A list of all variable names as shown in their respective columns.</li>
+<li><strong>actual</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A string containing the column name of Incurred Claim Costs (Weighted?)</li>
+<li><strong>expected</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A string containing the column name of the Manual Expected Claim Costs (Weighted?)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> – The Pandas dataframe containing underlying data</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/functions.html#vars" title="(in Python v3.7)"><strong>vars</strong></a> – Variables being optimized</li>
+<li><strong>actual</strong> – The name of the Actual Incurred Claims column in df</li>
+<li><strong>expected</strong> – The name of the Manual Expected Claims column in df</li>
+<li><strong>levels</strong> – The dictionary containing all factor levels for all variables passed from <cite>variables</cite></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="ActuarialOptimization.ActuarialOptimization.Optimize">
+<em class="property">class </em><code class="descclassname">ActuarialOptimization.ActuarialOptimization.</code><code class="descname">Optimize</code><span class="sig-paren">(</span><em>options</em>, <em>credibility=False</em>, <em>lifeYears=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ActuarialOptimization/ActuarialOptimization.html#Optimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ActuarialOptimization.ActuarialOptimization.Optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class that runs the optimization based off of <a class="reference internal" href="#ActuarialOptimization.ActuarialOptimization.Data" title="ActuarialOptimization.ActuarialOptimization.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> and <a class="reference internal" href="#ActuarialOptimization.ActuarialOptimization.Options" title="ActuarialOptimization.ActuarialOptimization.Options"><code class="xref py py-class docutils literal notranslate"><span class="pre">Options</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>options</strong> (<a class="reference internal" href="#ActuarialOptimization.ActuarialOptimization.Options" title="ActuarialOptimization.ActuarialOptimization.Options"><code class="xref py py-class docutils literal notranslate"><span class="pre">Options</span></code></a>) – The options class created to pass to     These arguments are transferred to the <cite>SciPy</cite> optimization technique <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution">differential_evolution</a></li>
+<li><strong>credibility</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – <p>Whether or not to factor in credibility, based on Life Years in the segment. If set to True, <cite>lifeYears</cite> must also be given an argument.</p>
+<p>Default is <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</li>
+<li><strong>lifeYears</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – <p>The name of the column in the <code class="docutils literal notranslate"><span class="pre">df</span></code> which was passed to the <a class="reference internal" href="#ActuarialOptimization.ActuarialOptimization.Data" title="ActuarialOptimization.ActuarialOptimization.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> class which represents the Life Years per policy.</p>
+<p>Default is <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ActuarialOptimization.ActuarialOptimization.Optimize.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ActuarialOptimization/ActuarialOptimization.html#Optimize.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ActuarialOptimization.ActuarialOptimization.Optimize.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution">differential_evolution</a>
+minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Tuple of the a dictionary containing variables and their factors, along with minimized absolute deviation and AE.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note: When using ``Optimize.run()``, it should be assigned as follows.</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">final_dictionary,</span> <span class="pre">endingAE,</span> <span class="pre">endingAbsDev</span> <span class="pre">=</span> <span class="pre">myOptimize.run()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ActuarialOptimization.ActuarialOptimization.Optimize.setCredibility">
+<code class="descname">setCredibility</code><span class="sig-paren">(</span><em>newCred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ActuarialOptimization/ActuarialOptimization.html#Optimize.setCredibility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ActuarialOptimization.ActuarialOptimization.Optimize.setCredibility" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>newCred</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Boolean of whether or not to use credibility.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ActuarialOptimization.ActuarialOptimization.Optimize.setLifeYears">
+<code class="descname">setLifeYears</code><span class="sig-paren">(</span><em>newLifeYears</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ActuarialOptimization/ActuarialOptimization.html#Optimize.setLifeYears"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ActuarialOptimization.ActuarialOptimization.Optimize.setLifeYears" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>newLifeYears</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – String consisting of column name of LifeYears</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ActuarialOptimization.ActuarialOptimization.Options">
+<em class="property">class </em><code class="descclassname">ActuarialOptimization.ActuarialOptimization.</code><code class="descname">Options</code><span class="sig-paren">(</span><em>data</em>, <em>strategy='best1bin'</em>, <em>maxiter=1000</em>, <em>popsize=15</em>, <em>tol=0.01</em>, <em>mutation=(0.5</em>, <em>1)</em>, <em>recombination=0.7</em>, <em>seed=None</em>, <em>disp=False</em>, <em>callback=None</em>, <em>polish=True</em>, <em>init='latinhypercube'</em>, <em>atol=0</em>, <em>updating='immediate'</em>, <em>workers=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ActuarialOptimization/ActuarialOptimization.html#Options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ActuarialOptimization.ActuarialOptimization.Options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class containing specifications about optimization technique. Most of the arguments can be left as defaults.
+These arguments are transferred to the <cite>SciPy</cite> optimization technique <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution">differential_evolution</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<a class="reference internal" href="#ActuarialOptimization.ActuarialOptimization.Data" title="ActuarialOptimization.ActuarialOptimization.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>) – An object of the type <a class="reference internal" href="#ActuarialOptimization.ActuarialOptimization.Data" title="ActuarialOptimization.ActuarialOptimization.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a></li>
+<li><strong>strategy</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – <p>The differential evolution strategy to use.
+Should be one of:</p>
+<blockquote>
+<div><ul>
+<li>‘best1bin’</li>
+<li>‘best1exp’</li>
+<li>‘rand1exp’</li>
+<li>‘randtobest1exp’</li>
+<li>‘currenttobest1exp’</li>
+<li>‘best2exp’</li>
+<li>‘rand2exp’</li>
+<li>‘randtobest1bin’</li>
+<li>‘currenttobest1bin’</li>
+<li>‘best2bin’</li>
+<li>‘rand2bin’</li>
+<li>‘rand1bin’</li>
+</ul>
+<p>The default is ‘best1bin’.</p>
+</div></blockquote>
+</li>
+<li><strong>maxiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of generations over which the entire population is evolved. The maximum number of function evaluations (with no polishing) is: <code class="docutils literal notranslate"><span class="pre">(maxiter</span> <span class="pre">+</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">popsize</span> <span class="pre">*</span> <span class="pre">len(x)</span></code></li>
+<li><strong>popsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – A multiplier for setting the total population size. The population has <code class="docutils literal notranslate"><span class="pre">popsize</span> <span class="pre">*</span> <span class="pre">len(x)</span></code> individuals (unless the initial population is supplied via the init keyword).</li>
+<li><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Relative tolerance for convergence, the solving stops when <code class="docutils literal notranslate"><span class="pre">np.std(pop)</span> <span class="pre">&lt;=</span> <span class="pre">atol</span> <span class="pre">+</span> <span class="pre">tol</span> <span class="pre">*</span> <span class="pre">np.abs(np.mean(population_energies))</span></code>, where and atol and tol are the absolute and relative tolerance respectively.</li>
+<li><strong>mutation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The mutation constant. In the literature this is also known as differential weight, being denoted by F. If specified as a float it should be in the range <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">2]</span></code>. If specified as a tuple <code class="docutils literal notranslate"><span class="pre">(min,</span> <span class="pre">max)</span></code> dithering is employed. Dithering randomly changes the mutation constant on a generation by generation basis. The mutation constant for that generation is taken from <code class="docutils literal notranslate"><span class="pre">U[min,</span> <span class="pre">max)</span></code>. Dithering can help speed convergence significantly. Increasing the mutation constant increases the search radius, but will slow down convergence.</li>
+<li><strong>recombination</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – The recombination constant, should be in the range <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>. In the literature this is also known as the crossover probability, being denoted by CR. Increasing this value allows a larger number of mutants to progress into the next generation, but at the risk of population stability.</li>
+<li><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><em>np.random.RandomState</em><em>, </em><em>optional</em>) – If seed is not specified the np.RandomState singleton is used. If seed is an int, a new np.random.RandomState instance is used, seeded with seed. If seed is already a np.random.RandomState instance, then that np.random.RandomState instance is used. Specify seed for repeatable minimizations.</li>
+<li><strong>disp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Display status messages</li>
+<li><strong>callback</strong> (<em>callable</em><em>, </em><em>callback</em><em>(</em><em>xk</em><em>, </em><em>convergence=val</em><em>)</em><em>, </em><em>optional</em>) – A function to follow the progress of the minimization. <code class="docutils literal notranslate"><span class="pre">xk</span></code> is the current value of <code class="docutils literal notranslate"><span class="pre">x0</span></code>. val represents the fractional value of the population convergence. When <code class="docutils literal notranslate"><span class="pre">val</span></code> is greater than one the function halts. If callback returns <cite>True</cite>, then the minimization is halted (any polishing is still carried out).</li>
+<li><strong>polish</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If True (default), then <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html#scipy.optimize.minimize">scipy.optimize.minimize</a> with the L-BFGS-B method is used to polish the best population member at the end, which can improve the minimization slightly.</li>
+<li><strong>init</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – <p>Specify which type of population initialization is performed. Should be one of:</p>
+<ul>
+<li>‘latinhypercube’</li>
+<li>‘random’</li>
+<li>array specifying the initial population. The array should have shape (M, len(x)), where len(x) is the number of parameters. init is clipped to bounds before use.</li>
+</ul>
+<p>The default is ‘latinhypercube’. Latin Hypercube sampling tries to maximize coverage of the available parameter space. ‘random’ initializes the population randomly - this has the drawback that clustering can occur, preventing the whole of parameter space being covered. Use of an array to specify a population subset could be used, for example, to create a tight bunch of initial guesses in an location where the solution is known to exist, thereby reducing time for convergence.</p>
+</li>
+<li><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Absolute tolerance for convergence, the solving stops when <code class="docutils literal notranslate"><span class="pre">np.std(pop)</span> <span class="pre">&lt;=</span> <span class="pre">atol</span> <span class="pre">+</span> <span class="pre">tol</span> <span class="pre">*</span> <span class="pre">np.abs(np.mean(population_energies))</span></code>, where and atol and tol are the absolute and relative tolerance respectively.</li>
+<li><strong>updating</strong> (<em>{'immediate'</em><em>,</em><em>'deferred'}</em><em>, </em><em>optional</em>) – <p>If ‘immediate’, the best solution vector is continuously updated within a single generation [4]. This can lead to faster convergence as trial vectors can take advantage of continuous improvements in the best solution. With ‘deferred’, the best solution vector is updated once per generation. Only ‘deferred’ is compatible with parallelization, and the workers keyword can over-ride this option</p>
+<p><strong>Note: Seems to not converge in finite time? I wouldn’t utilize this argument</strong></p>
+</li>
+<li><strong>workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><em>map-like callable</em><em>, </em><em>optional</em>) – <p>If workers is an int the population is subdivided into workers sections and evaluated in parallel (uses <strong>multiprocessing.Pool</strong>). Supply -1 to use all available CPU cores. Alternatively supply a map-like callable, such as multiprocessing.Pool.map for evaluating the population in parallel. This evaluation is carried out as workers <code class="docutils literal notranslate"><span class="pre">(func,</span> <span class="pre">iterable)</span></code>. This option will override the updating keyword to <code class="docutils literal notranslate"><span class="pre">updating='deferred'</span></code> if <code class="docutils literal notranslate"><span class="pre">workers</span> <span class="pre">!=</span> <span class="pre">1</span></code>. Requires that func be pickleable.</p>
+<p><strong>Note: See above note</strong></p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="code-example">
+<span id="tobottom"></span><h2>Code Example<a class="headerlink" href="#code-example" title="Permalink to this headline">¶</a></h2>
+<p>Click  <a class="reference internal" href="Tutorial.html#tutorial"><span class="std std-ref">here</span></a> for a tutorial/walkthrough from code used in the 2019 LTD manual rate refresh.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="ActuarialOptimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Paul Frydryk
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

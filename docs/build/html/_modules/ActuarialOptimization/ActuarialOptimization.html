@@ -1,0 +1,559 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ActuarialOptimization.ActuarialOptimization &mdash; Actuarial Optimization 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Actuarial Optimization
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Tutorial.html">Full Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Actuarial Optimization</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ActuarialOptimization.ActuarialOptimization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ActuarialOptimization.ActuarialOptimization</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1">#Paul Frydryk</span>
+<span class="c1">#2019</span>
+<span class="c1">#The purpose of this file is to attempt to ease the process of undergoing</span>
+<span class="c1">#a manual rate refresh. Instead of having to rewrite code to adapt to</span>
+<span class="c1">#minor changes, this file will act as a template (and possibly a guideline).</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">optimize</span>
+
+
+<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../ActuarialOptimization.html#ActuarialOptimization.ActuarialOptimization.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data class used in optimization.</span>
+
+<span class="sd">    :param df: The `pandas` dataframe containing final filtered data. Note: Data should already be scrubbed, containing NaNs can cause problems further down the line.</span>
+<span class="sd">        best practice is to already subset data on preliminary conditions.</span>
+<span class="sd">    :param variables: A list of all variable names as shown in their respective columns.</span>
+<span class="sd">    :param actual: A string containing the column name of Incurred Claim Costs (Weighted?)</span>
+<span class="sd">    :param expected: A string containing the column name of the Manual Expected Claim Costs (Weighted?)</span>
+
+<span class="sd">    :type df: `Pandas DataFrame &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html&gt;`_</span>
+<span class="sd">    :type variables: list</span>
+<span class="sd">    :type actual: str</span>
+<span class="sd">    :type expected: str</span>
+
+<span class="sd">    :ivar df: The Pandas dataframe containing underlying data</span>
+<span class="sd">    :ivar vars: Variables being optimized</span>
+<span class="sd">    :ivar actual: The name of the Actual Incurred Claims column in df</span>
+<span class="sd">    :ivar expected: The name of the Manual Expected Claims column in df</span>
+<span class="sd">    :ivar levels: The dictionary containing all factor levels for all variables passed from `variables`</span>
+
+
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vars</span> <span class="o">=</span> <span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actual</span> <span class="o">=</span> <span class="n">actual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected</span> <span class="o">=</span> <span class="n">expected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__getLevels</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialAE</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">actual</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">df</span><span class="p">[</span><span class="n">expected</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__getLevels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1">#Putting factor levels into the dictionary</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vars</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span></div>
+<div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../ActuarialOptimization.html#ActuarialOptimization.ActuarialOptimization.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class containing specifications about optimization technique. Most of the arguments can be left as defaults.</span>
+<span class="sd">    These arguments are transferred to the `SciPy` optimization technique `differential_evolution &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution&gt;`_</span>
+
+<span class="sd">    :param data: An object of the type :class:`Data`</span>
+<span class="sd">    :param strategy: The differential evolution strategy to use.</span>
+<span class="sd">     Should be one of:</span>
+
+<span class="sd">        * ‘best1bin’</span>
+<span class="sd">        * ‘best1exp’</span>
+<span class="sd">        * ‘rand1exp’</span>
+<span class="sd">        * ‘randtobest1exp’</span>
+<span class="sd">        * ‘currenttobest1exp’</span>
+<span class="sd">        * ‘best2exp’</span>
+<span class="sd">        * ‘rand2exp’</span>
+<span class="sd">        * ‘randtobest1bin’</span>
+<span class="sd">        * ‘currenttobest1bin’</span>
+<span class="sd">        * ‘best2bin’</span>
+<span class="sd">        * ‘rand2bin’</span>
+<span class="sd">        * ‘rand1bin’</span>
+
+<span class="sd">        The default is ‘best1bin’.</span>
+<span class="sd">    :param maxiter: The maximum number of generations over which the entire population is evolved. The maximum number of function evaluations (with no polishing) is: ``(maxiter + 1) * popsize * len(x)``</span>
+<span class="sd">    :param popsize: A multiplier for setting the total population size. The population has ``popsize * len(x)`` individuals (unless the initial population is supplied via the init keyword).</span>
+<span class="sd">    :param tol:  Relative tolerance for convergence, the solving stops when ``np.std(pop) &lt;= atol + tol * np.abs(np.mean(population_energies))``, where and atol and tol are the absolute and relative tolerance respectively.</span>
+<span class="sd">    :param mutation: The mutation constant. In the literature this is also known as differential weight, being denoted by F. If specified as a float it should be in the range ``[0, 2]``. If specified as a tuple ``(min, max)`` dithering is employed. Dithering randomly changes the mutation constant on a generation by generation basis. The mutation constant for that generation is taken from ``U[min, max)``. Dithering can help speed convergence significantly. Increasing the mutation constant increases the search radius, but will slow down convergence.</span>
+<span class="sd">    :param recombination: The recombination constant, should be in the range ``[0, 1]``. In the literature this is also known as the crossover probability, being denoted by CR. Increasing this value allows a larger number of mutants to progress into the next generation, but at the risk of population stability.</span>
+<span class="sd">    :param seed: If seed is not specified the np.RandomState singleton is used. If seed is an int, a new np.random.RandomState instance is used, seeded with seed. If seed is already a np.random.RandomState instance, then that np.random.RandomState instance is used. Specify seed for repeatable minimizations.</span>
+<span class="sd">    :param disp: Display status messages</span>
+<span class="sd">    :param callback: A function to follow the progress of the minimization. ``xk`` is the current value of ``x0``. val represents the fractional value of the population convergence. When ``val`` is greater than one the function halts. If callback returns `True`, then the minimization is halted (any polishing is still carried out).</span>
+<span class="sd">    :param polish: If True (default), then `scipy.optimize.minimize &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html#scipy.optimize.minimize&gt;`_ with the L-BFGS-B method is used to polish the best population member at the end, which can improve the minimization slightly.</span>
+<span class="sd">    :param init: Specify which type of population initialization is performed. Should be one of:</span>
+
+<span class="sd">        * ‘latinhypercube’</span>
+<span class="sd">        * ‘random’</span>
+<span class="sd">        * array specifying the initial population. The array should have shape (M, len(x)), where len(x) is the number of parameters. init is clipped to bounds before use.</span>
+
+<span class="sd">        The default is ‘latinhypercube’. Latin Hypercube sampling tries to maximize coverage of the available parameter space. ‘random’ initializes the population randomly - this has the drawback that clustering can occur, preventing the whole of parameter space being covered. Use of an array to specify a population subset could be used, for example, to create a tight bunch of initial guesses in an location where the solution is known to exist, thereby reducing time for convergence.</span>
+<span class="sd">    :param atol: Absolute tolerance for convergence, the solving stops when ``np.std(pop) &lt;= atol + tol * np.abs(np.mean(population_energies))``, where and atol and tol are the absolute and relative tolerance respectively.</span>
+<span class="sd">    :param updating: If &#39;immediate&#39;, the best solution vector is continuously updated within a single generation [4]. This can lead to faster convergence as trial vectors can take advantage of continuous improvements in the best solution. With &#39;deferred&#39;, the best solution vector is updated once per generation. Only &#39;deferred&#39; is compatible with parallelization, and the workers keyword can over-ride this option</span>
+
+<span class="sd">        **Note: Seems to not converge in finite time? I wouldn&#39;t utilize this argument**</span>
+
+<span class="sd">    :param workers: If workers is an int the population is subdivided into workers sections and evaluated in parallel (uses **multiprocessing.Pool**). Supply -1 to use all available CPU cores. Alternatively supply a map-like callable, such as multiprocessing.Pool.map for evaluating the population in parallel. This evaluation is carried out as workers ``(func, iterable)``. This option will override the updating keyword to ``updating=&#39;deferred&#39;`` if ``workers != 1``. Requires that func be pickleable.</span>
+
+<span class="sd">        **Note: See above note**</span>
+
+
+<span class="sd">    :type data: :class:`Data`</span>
+<span class="sd">    :type strategy: str, optional</span>
+<span class="sd">    :type maxiter: int, optional</span>
+<span class="sd">    :type popsize: int, optional</span>
+<span class="sd">    :type tol: float, optional</span>
+<span class="sd">    :type mutation: float or tuple(float, float), optional</span>
+<span class="sd">    :type recombination: float, optional</span>
+<span class="sd">    :type seed: int or np.random.RandomState, optional</span>
+<span class="sd">    :type disp: bool, optional</span>
+<span class="sd">    :type callback: callable, callback(xk, convergence=val), optional</span>
+<span class="sd">    :type polish: bool, optional</span>
+<span class="sd">    :type init: str or array-like, optional</span>
+<span class="sd">    :type atol: float, optional</span>
+<span class="sd">    :type updating: {&#39;immediate&#39;,&#39;deferred&#39;}, optional</span>
+<span class="sd">    :type workers: int or map-like callable, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;best1bin&#39;</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">popsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">mutation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                 <span class="n">recombination</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="n">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polish</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;latinhypercube&#39;</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">updating</span><span class="o">=</span><span class="s1">&#39;immediate&#39;</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Most options can be left as defaults, but `data` must be passed a Data class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Data</span><span class="p">),</span> <span class="s2">&quot;Parameter &#39;data&#39; must be an instance of the Data class.&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">strategy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxiter</span> <span class="o">=</span> <span class="n">maxiter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popsize</span> <span class="o">=</span> <span class="n">popsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutation</span> <span class="o">=</span> <span class="n">mutation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recombination</span> <span class="o">=</span> <span class="n">recombination</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disp</span> <span class="o">=</span> <span class="n">disp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polish</span> <span class="o">=</span> <span class="n">polish</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span> <span class="o">=</span> <span class="n">init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atol</span> <span class="o">=</span> <span class="n">atol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updating</span> <span class="o">=</span> <span class="n">updating</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="n">workers</span>
+
+
+
+    <span class="k">def</span> <span class="nf">__abs_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factorlist</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param factorlist: The current set of factors for the given variable.</span>
+<span class="sd">        :param variable: The variable currently being optimized.</span>
+<span class="sd">        :return abs_dev: The resulting sum of absolute deviations of Actual vs Expected across all policies for the given factorlist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">factor_dict</span>
+        <span class="n">factor_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">variable</span><span class="p">])):</span>
+            <span class="n">factor_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">factorlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">abs_dev</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_exp_weighted</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">variable</span><span class="p">])):</span>
+            <span class="n">new_exp_weighted</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span>
+
+        <span class="n">new_AE</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">])</span> <span class="o">/</span> <span class="n">new_exp_weighted</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">variable</span><span class="p">])):</span>
+            <span class="n">abs_dev</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="n">new_AE</span> <span class="o">-</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">new_AE</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_initialAE</span> <span class="o">*</span> <span class="mf">0.9</span> <span class="ow">or</span> <span class="n">new_AE</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_initialAE</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">:</span>
+            <span class="n">abs_dev</span> <span class="o">+=</span> <span class="mf">1e10</span>
+
+        <span class="k">return</span> <span class="n">abs_dev</span></div>
+
+
+
+
+<div class="viewcode-block" id="Optimize"><a class="viewcode-back" href="../../ActuarialOptimization.html#ActuarialOptimization.ActuarialOptimization.Optimize">[docs]</a><span class="k">class</span> <span class="nc">Optimize</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class that runs the optimization based off of :class:`Data` and :class:`Options`.</span>
+
+<span class="sd">    :param options: The options class created to pass to     These arguments are transferred to the `SciPy` optimization technique `differential_evolution &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution&gt;`_</span>
+<span class="sd">    :param credibility: Whether or not to factor in credibility, based on Life Years in the segment. If set to True, `lifeYears` must also be given an argument.</span>
+
+<span class="sd">        Default is ``False``</span>
+<span class="sd">    :param lifeYears: The name of the column in the ``df`` which was passed to the :class:`Data` class which represents the Life Years per policy.</span>
+
+<span class="sd">        Default is ``None``</span>
+
+<span class="sd">    :type options: :class:`Options`</span>
+<span class="sd">    :type credibility: bool, optional</span>
+<span class="sd">    :type lifeYears: str, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">credibility</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">lifeYears</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">),</span> <span class="s2">&quot;Parameter &#39;options&#39; must be an instance of the Options class.&quot;</span>
+
+        <span class="k">if</span> <span class="n">lifeYears</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">credibility</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Credibility set to False, but life years given an argument. Change this using the setCredibility() method.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lifeYears</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">credibility</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Credibility set to True, but lifeYears not given an argument. Change this by using the setLifeYears() method.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lifeYears</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">credibility</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not using credibility will default all factors to change within a 20</span><span class="si">% r</span><span class="s2">ange. You can decide to use credibility later by using the setCredibility() and setLifeYears() methods.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">credibility</span> <span class="o">=</span> <span class="n">credibility</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lifeYears</span> <span class="o">=</span> <span class="n">lifeYears</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds_lower</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds_upper</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__checkCredibility</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Optimize.setCredibility"><a class="viewcode-back" href="../../ActuarialOptimization.html#ActuarialOptimization.ActuarialOptimization.Optimize.setCredibility">[docs]</a>    <span class="k">def</span> <span class="nf">setCredibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newCred</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param newCred: Boolean of whether or not to use credibility.</span>
+<span class="sd">        :type newCred: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">credibility</span> <span class="o">=</span> <span class="n">newCred</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__checkCredibility</span><span class="p">()</span></div>
+<div class="viewcode-block" id="Optimize.setLifeYears"><a class="viewcode-back" href="../../ActuarialOptimization.html#ActuarialOptimization.ActuarialOptimization.Optimize.setLifeYears">[docs]</a>    <span class="k">def</span> <span class="nf">setLifeYears</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newLifeYears</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param newLifeYears: String consisting of column name of LifeYears</span>
+<span class="sd">        :type newLifeYears: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lifeYears</span> <span class="o">=</span> <span class="n">newLifeYears</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__checkCredibility</span><span class="p">()</span></div>
+    <span class="k">def</span> <span class="nf">__checkCredibility</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;checking bounds&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">credibility</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifeYears</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__createCredibility</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">vars</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bounds_lower</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bounds_upper</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bounds_lower</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bounds_upper</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="mf">1.2</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+
+
+
+    <span class="k">def</span> <span class="nf">__createCredibility</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds_lower</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds_upper</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">vars</span><span class="p">:</span>
+            <span class="n">lb</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">ub</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                <span class="n">credibility</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lifeYears</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">400000</span><span class="p">)</span>
+                <span class="n">AEratio</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span>
+                                      <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">])</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">]))</span>
+                <span class="n">bound</span> <span class="o">=</span> <span class="n">AEratio</span> <span class="o">*</span> <span class="n">credibility</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">credibility</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">bound</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">lb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bound</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">bound</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bound</span><span class="p">)</span>
+                    <span class="n">lb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">bound</span><span class="p">):</span>
+                    <span class="n">ub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">lb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds_lower</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">lb</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds_upper</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ub</span>
+
+
+    <span class="k">def</span> <span class="nf">__abs_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factorlist</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param factorlist: The current set of factors for the given variable.</span>
+<span class="sd">        :param variable: The variable currently being optimized.</span>
+<span class="sd">        :return abs_dev: The resulting sum of absolute deviations of Actual vs Expected across all policies for the given factorlist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">factor_dict</span>
+        <span class="n">factor_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">variable</span><span class="p">])):</span>
+            <span class="n">factor_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">factorlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">abs_dev</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_exp_weighted</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">variable</span><span class="p">])):</span>
+            <span class="n">new_exp_weighted</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span>
+
+        <span class="n">new_AE</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">])</span> <span class="o">/</span> <span class="n">new_exp_weighted</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">variable</span><span class="p">])):</span>
+            <span class="n">abs_dev</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="n">new_AE</span> <span class="o">-</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">new_AE</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_initialAE</span> <span class="o">*</span> <span class="mf">0.9</span> <span class="ow">or</span> <span class="n">new_AE</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_initialAE</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">:</span>
+            <span class="n">abs_dev</span> <span class="o">+=</span> <span class="mf">1e10</span>
+
+        <span class="k">return</span> <span class="n">abs_dev</span>
+
+
+    <span class="k">def</span> <span class="nf">__change_manual_expected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factorlist</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current Manual Expected Weighted: &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">])))</span>
+
+        <span class="n">factor_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">factor</span><span class="p">])):</span>
+            <span class="n">factor_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">factor</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">factorlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">factor</span><span class="p">])):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">factor</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">acc</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;__+++++++++++++++__&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;New Manual Expected Weighted: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">])))</span>
+
+
+
+
+<div class="viewcode-block" id="Optimize.run"><a class="viewcode-back" href="../../ActuarialOptimization.html#ActuarialOptimization.ActuarialOptimization.Optimize.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the `differential_evolution &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution&gt;`_</span>
+<span class="sd">        minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected.</span>
+
+<span class="sd">        :return: Tuple of the a dictionary containing variables and their factors, along with minimized absolute deviation and AE.</span>
+
+<span class="sd">        **Note: When using ``Optimize.run()``, it should be assigned as follows.**</span>
+
+<span class="sd">        ``final_dictionary, endingAE, endingAbsDev = myOptimize.run()``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">final_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">start_dev</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)):</span>
+            <span class="n">start_dev</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">])</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">])</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting absolute deviation: &quot;</span><span class="p">,</span> <span class="n">start_dev</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting AE&quot;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">])</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting optimization date and time: &quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">(</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="p">))</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">vars</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Currently working on &quot;</span><span class="o">+</span><span class="n">f</span><span class="o">+</span><span class="s2">&quot;, variable &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">vars</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">xmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds_lower</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+            <span class="n">xmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds_upper</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span> <span class="k">for</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">differential_evolution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__abs_dev</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="p">,),</span>
+                                                        <span class="n">strategy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">strategy</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">maxiter</span><span class="p">,</span>
+                                                        <span class="n">popsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">popsize</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
+                                                        <span class="n">mutation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mutation</span><span class="p">,</span> <span class="n">recombination</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">recombination</span><span class="p">,</span>
+                                                        <span class="n">seed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+                                                        <span class="n">disp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">disp</span><span class="p">,</span> <span class="n">polish</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">polish</span><span class="p">,</span>
+                                                        <span class="n">init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">init</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">atol</span><span class="p">,</span>
+                                                        <span class="n">updating</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">updating</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">workers</span><span class="p">)</span>
+            <span class="n">temp_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">f</span><span class="p">])):</span>
+                <span class="n">temp_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="n">k</span><span class="p">]]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">final_dict</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">=</span><span class="n">temp_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__change_manual_expected</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">endingAE</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">actual</span><span class="p">])</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">expected</span><span class="p">])</span>
+        <span class="n">endingdev</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">fun</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ending AE&quot;</span><span class="p">,</span> <span class="n">endingAE</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ending absolute deviation&quot;</span><span class="p">,</span> <span class="n">endingdev</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ending optimization date and time&quot;</span><span class="p">,</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">(</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">final_dict</span><span class="p">,</span> <span class="n">endingAE</span><span class="p">,</span> <span class="n">endingdev</span></div></div>
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Paul Frydryk
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

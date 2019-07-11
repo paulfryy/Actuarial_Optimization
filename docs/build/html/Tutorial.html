@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tutorial &mdash; Actuarial Optimization 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="ActuarialOptimization package" href="ActuarialOptimization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Actuarial Optimization
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Full Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Actuarial Optimization</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tutorial">
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This page contains a basic runthrough of existing python code used to assist in the manual rate refresh from 2019.</p>
+<p>First off, some dependencies must be imported for the code to run without errors.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+<p>In order to utilize the package <code class="docutils literal notranslate"><span class="pre">ActuarialOptimization</span></code>, the filepath containing the package must be added to Python’s current
+list of paths in which it looks for packages.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\Users\paufry\PycharmProjects\ActuarialOptimization\scripts\ActuarialOptimization&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ManualOptimizationAE</span> <span class="kn">as</span> <span class="nn">mo</span>
+</pre></div>
+</div>
+<p>Now,  <a class="reference external" href="https://pandas.pydata.org/">Pandas</a> is used to read the data in from an excel file, and save it as a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> under the the <code class="docutils literal notranslate"><span class="pre">mydata</span></code> variable name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mydata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;myData.xlsx&quot;</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span> <span class="s2">&quot;Current Factors&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The code is cleaned of all missing data entries (can also replace with median etc.). Also, the data is subset on years 2014+,
+and only those that are not hybrid policies. The shape of the DataFrame is printed to look at the changes made.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mydata</span><span class="o">=</span><span class="n">mydata</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Manual_Expected_weighted&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">mydata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="hll"><span class="go">(2354, 79)</span>
+</span><span class="gp">&gt;&gt;&gt; </span><span class="n">mydata</span><span class="o">=</span><span class="n">mydata</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SIC_Group_LDI&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">mydata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="hll"><span class="go">(2354, 79)</span>
+</span><span class="gp">&gt;&gt;&gt; </span><span class="n">mydata</span> <span class="o">=</span> <span class="n">mydata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mydata</span><span class="p">[</span><span class="s2">&quot;Hybrid_Indicator&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mydata</span> <span class="o">=</span> <span class="n">mydata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mydata</span><span class="p">[</span><span class="s2">&quot;Year&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">2014</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mydata</span> <span class="o">=</span> <span class="n">mydata</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">mydata</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="hll"><span class="go">(2170, 80)</span>
+</span></pre></div>
+</div>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code> class is created. Note the second argument is a list containing column names of all of the factors that are being analyzed.
+The third and fourth arguments are the column names for the Incurred Claim Amounts (weighted), and the current Manual Expected Claim Amounts (weighted).
+Column Names can vary, so ensure they are entered correctly for the dataset being used.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataClass</span> <span class="o">=</span> <span class="n">mo</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="n">mydata</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;SIC_Group_LDI&quot;</span><span class="p">,</span> <span class="s2">&quot;Male_Pct&quot;</span><span class="p">,</span> <span class="s2">&quot;SG_RR&quot;</span><span class="p">,</span> <span class="s2">&quot;STD_Indicator&quot;</span><span class="p">,</span> <span class="s2">&quot;SG_Max_Ben&quot;</span><span class="p">,</span> <span class="s2">&quot;SG_Blue_Pct&quot;</span><span class="p">,</span>
+<span class="go">         &quot;SG_CaseSize&quot;, &quot;SG_Avg_Salary&quot;, &quot;SG_Ben_Pct&quot;, &quot;SG_Elim&quot;, &quot;SG_OwnOcc&quot;, &quot;SG_Partic&quot;], actual = &quot;Incurred_Claim_Amount_weighted&quot;,</span>
+<span class="go">             expected = &quot;Manual_Expected_weighted&quot;)</span>
+</pre></div>
+</div>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">Options</span></code> class is created. It is passed dataClass, the instance of <code class="docutils literal notranslate"><span class="pre">Data</span></code>, and all other arguments are left default.
+(See <code class="xref py py-class docutils literal notranslate"><span class="pre">Options</span></code> for more information)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">myOptions</span> <span class="o">=</span> <span class="n">mo</span><span class="o">.</span><span class="n">Options</span><span class="p">(</span><span class="n">dataClass</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next, an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Optimize</span></code> is created, passing it myOptions (the instance of <code class="docutils literal notranslate"><span class="pre">Options</span></code>), along with a boolean
+indicator noting that there should be a credibility weight applied to each segment. Since this argument is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">lifeYears</span></code>
+must be given the column name that represents the total lifeYears in a policy.</p>
+<p><strong>Note:</strong> If set to False (default), each factor level can change withing 20% of its original (may lead to overcompensation
+due to small sample sizes)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">myOptimize</span> <span class="o">=</span> <span class="n">mo</span><span class="o">.</span><span class="n">Optimize</span><span class="p">(</span><span class="n">myOptions</span><span class="p">,</span> <span class="n">credibility</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">lifeYears</span> <span class="o">=</span> <span class="s2">&quot;Life_Years&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution">differential_evolution</a>
+can run. Note that it needs to be saved under three variables. The first variable represents the dictionary being returned containing
+all of the variables, their level of factors, and optimized values. The second variable is the AE (Actual/Expected) ratio that would
+be achieved if these factors had been in place. Lastly, the third variable is the sum of all absolute deviations of incurred to expected
+at the end of the optimization (This is what is being minimized).</p>
+<p><strong>Note:</strong> There is a lot of excluded output from myOptimize.run() that is printed in the console. It has been excluded for increased
+readability in this tutorial, yet may be useful in context.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">final_dictionary</span><span class="p">,</span> <span class="n">ending_AE</span><span class="p">,</span> <span class="n">ending_abs_dev</span> <span class="o">=</span> <span class="n">myOptimize</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">final_dictionary</span><span class="p">)</span>
+<span class="hll"><span class="go">{&#39;SIC_Group_LDI&#39;: {&#39;48:  Retail - Apparel &amp; Accessories&#39;: 1.0, ..., &#39;07: 75-79%&#39;: 0.9533748114180909, &#39;05: 85-89%&#39;: 0.9757853818251141}}</span>
+</span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">ending_AE</span><span class="p">)</span>
+<span class="hll"><span class="go">0.8457173051580926</span>
+</span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">ending_abs_dev</span><span class="p">)</span>
+<span class="hll"><span class="go">88311962.01598422</span>
+</span></pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="ActuarialOptimization.html" class="btn btn-neutral float-left" title="ActuarialOptimization package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Paul Frydryk
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
