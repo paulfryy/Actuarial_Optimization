@@ -228,7 +228,6 @@ class Optimize:
         self.lifeYears = newLifeYears
         self.__checkCredibility()
     def __checkCredibility(self):
-        print("checking bounds")
         if self.credibility and self.lifeYears:
             self.__createCredibility()
         else:
