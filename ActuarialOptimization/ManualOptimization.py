@@ -322,7 +322,7 @@ class Optimize:
         minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected.
 
         :return: Tuple of the a dictionary containing variables and their factors, along with minimized absolute deviation and AE.
-
+        :rtype: tuple
         **Note: When using** ``Optimize.run()``, **it should be assigned as follows.**
 
         ``final_dictionary, endingAE, endingAbsDev = myOptimize.run()``
