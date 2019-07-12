@@ -270,7 +270,6 @@ class Optimize:
             self.bounds_lower[v] = lb
             self.bounds_upper[v] = ub
 
-
     def __abs_dev(self, factorlist, variable):
         """
 
@@ -283,17 +282,14 @@ class Optimize:
         for i in range(len(self.options.data.levels[variable])):
             factor_dict[self.options.data.levels[variable][i]] = factorlist[i]
 
-        abs_dev = 0
-        new_exp_weighted = 0
+        new_exp_weighted = sum(
+            self.options.data.df[self.options.data.expected] * self.options.data.df[variable].map(factor_dict))
 
-        for i in range(len(self.options.data.df[variable])):
-            new_exp_weighted += self.options.data.df[self.options.data.expected][i] * factor_dict[self.options.data.df[variable][i]]
-
-        new_AE = sum(self.options.data.df[self.options.data.actual]) / new_exp_weighted
-
-        for i in range(len(self.options.data.df[variable])):
-            abs_dev += abs(self.options.data.df[self.options.data.expected][i] * factor_dict[self.options.data.df[variable][i]] * new_AE -
-                           self.options.data.df[self.options.data.actual][i])
+        new_AE = sum(self.options.data.df[self.options.data.actual].values) / new_exp_weighted
+        abs_dev = sum(abs(self.options.data.df[self.options.data.expected].values *
+                          sum(self.options.data.df[self.options.data.actual].values) /
+                          sum(self.options.data.df[self.options.data.expected].values)
+                          - self.options.data.df[self.options.data.actual].values))
 
         if new_AE < self.options.data._initialAE * 0.9 or new_AE > self.options.data._initialAE * 1.1:
             abs_dev += 1e10
@@ -303,8 +299,6 @@ class Optimize:
 
     def __change_manual_expected(self, factorlist, factor):
 
-        print("Current Manual Expected Weighted: ", str(sum(self.options.data.df[self.options.data.expected])))
-
         factor_dict = {}
 
         for i in range(len(self.options.data.levels[factor])):
@@ -313,8 +307,6 @@ class Optimize:
         for i in range(len(self.options.data.df[factor])):
             self.options.data.df.at[i, self.options.data.expected] = self.options.data.df.at[i, self.options.data.expected] * factor_dict[self.options.data.df[factor][i]]
             acc += self.options.data.df.at[i, self.options.data.expected]
-        print("__+++++++++++++++__")
-        print("New Manual Expected Weighted: " + str(sum(self.options.data.df[self.options.data.expected])))
 
 
 
@@ -322,7 +314,7 @@ class Optimize:
     def run(self):
         """
         Runs the `differential_evolution <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution>`_
-        minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected. **Runtime is dependent on number of factors being optimized. Possible to take multiple hours.**
+        minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected.
 
         :return: Tuple of the a dictionary containing variables and their factors, along with minimized absolute deviation and AE.
 
@@ -330,19 +322,27 @@ class Optimize:
 
         ``final_dictionary, endingAE, endingAbsDev = myOptimize.run()``
         """
-
+        print("==========================================================")
+        print("__________________________________________________________")
+        print("              Running Actuarial Optimization              ")
+        print("̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅")
+        print("==========================================================")
         final_dict = {}
-        start_dev = 0
-        for i in range(len(self.options.data.df.index)):
-            start_dev += abs(self.options.data.df[self.options.data.expected][i] * sum(self.options.data.df[self.options.data.actual]) / sum(
-                self.options.data.df[self.options.data.expected]) - self.options.data.df[self.options.data.actual][i])
-
+        start_dev = sum(abs(self.options.data.df[self.options.data.expected].values *
+                            sum(self.options.data.df[self.options.data.actual].values) /
+                            sum(self.options.data.df[self.options.data.expected].values)
+                            - self.options.data.df[self.options.data.actual].values))
         print("Starting absolute deviation: ", start_dev)
         print("Starting AE", sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected]))
         print("Starting optimization date and time: ", time.asctime( time.localtime(time.time()) ))
+        print("__________________________________________________________")
         current = 1
         for f in self.options.data.vars:
             print("Currently working on "+f+", variable "+str(current)+"/"+str(len(self.options.data.vars))+".")
+            print("Absolute Deviation before working on "+f+": "+ str(sum(abs(self.options.data.df[self.options.data.expected].values *
+                            sum(self.options.data.df[self.options.data.actual].values) /
+                            sum(self.options.data.df[self.options.data.expected].values)
+                            - self.options.data.df[self.options.data.actual].values))))
             current += 1
             xmin = self.bounds_lower[f]
             xmax = self.bounds_upper[f]
@@ -360,11 +360,14 @@ class Optimize:
                 temp_dict[self.options.data.levels[f][k]] = res.x[k]
             final_dict[f]=temp_dict.copy()
             self.__change_manual_expected(res.x, f)
+            print("Absolute Deviation after working on "+f+": "+ str(sum(abs(self.options.data.df[self.options.data.expected].values *
+                            sum(self.options.data.df[self.options.data.actual].values) /
+                            sum(self.options.data.df[self.options.data.expected].values)
+                            - self.options.data.df[self.options.data.actual].values))))
+            print("==========================================================")
         endingAE = sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected])
         endingdev = res.fun
 
-        print("Ending AE", endingAE)
-        print("Ending absolute deviation", endingdev)
         print("Ending optimization date and time",time.asctime( time.localtime(time.time()) ))
 
         return final_dict, endingAE, endingdev
