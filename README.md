@@ -7,4 +7,4 @@ Read [THIS](https://docs.python.org/3/library/modules.html#modules) for info on 
 
 
 
-## [ReadTheDocs page](https://actuarial-optimization.readthedocs.io/en/latest/index.html)
+## [Read the Docs page](https://actuarial-optimization.readthedocs.io/en/latest/index.html)
