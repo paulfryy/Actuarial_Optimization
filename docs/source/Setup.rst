@@ -61,7 +61,7 @@ Example
 
 .. code-block:: python
 
-       >>> df = df.loc[df["Year] >= 2014]
+       >>> df = df.loc[df["Year"] >= 2014]
 
 
 
