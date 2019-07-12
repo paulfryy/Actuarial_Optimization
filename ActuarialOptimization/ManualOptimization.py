@@ -11,7 +11,8 @@ import pandas as pd
 import time
 import scipy
 from scipy import optimize
-
+import warnings
+warnings.filterwarnings("error")
 
 class Data:
 
@@ -252,22 +253,25 @@ class Optimize:
             ub = []
             x = 0
             for f in self.options.data.levels[v]:
-                credibility = np.sqrt(self.options.data.df.loc[self.options.data.df[v] == f, self.lifeYears].sum() / 400000)
-                AEratio = (self.options.data.df.loc[self.options.data.df[v] == f, self.options.data.actual].sum() / self.options.data.df.loc[
-                    self.options.data.df[v] == f, self.options.data.expected].sum()) / (
-                                      sum(self.options.data.df[self.options.data.actual]) / sum(
-                                  self.options.data.df[self.options.data.expected]))
-                bound = AEratio * credibility + (1 - credibility)
+                try:
+                    credibility = np.sqrt(self.options.data.df.loc[self.options.data.df[v] == f, self.lifeYears].sum() / 400000)
+                    AEratio = (self.options.data.df.loc[self.options.data.df[v] == f, self.options.data.actual].sum() / self.options.data.df.loc[
+                        self.options.data.df[v] == f, self.options.data.expected].sum()) / (
+                                          sum(self.options.data.df[self.options.data.actual]) / sum(
+                                      self.options.data.df[self.options.data.expected]))
+                    bound = AEratio * credibility + (1 - credibility)
 
-                if bound < 1:
-                    ub.append(1)
-                    lb.append(bound)
-                if bound >= 1:
-                    ub.append(bound)
-                    lb.append(1)
-                if np.isnan(bound):
-                    ub.append(1)
-                    lb.append(1)
+                    if bound < 1:
+                        ub.append(1)
+                        lb.append(bound)
+                    if bound >= 1:
+                        ub.append(bound)
+                        lb.append(1)
+                    if np.isnan(bound):
+                        ub.append(1)
+                        lb.append(1)
+                except(RuntimeWarning):
+                    raise RuntimeWarning("Unexpected value in "+str(v)+". Hint: Check for nulls.")
             self.bounds_lower[v] = lb
             self.bounds_upper[v] = ub
 
