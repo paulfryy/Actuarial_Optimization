@@ -31,7 +31,7 @@ class Data:
     :type expected: str
 
     :ivar df: The Pandas dataframe containing underlying data
-    :ivar vars: Variables being optimized
+    :ivar var_list: Variables being optimized
     :ivar actual: The name of the Actual Incurred Claims column in df
     :ivar expected: The name of the Manual Expected Claims column in df
     :ivar levels: The dictionary containing all factor levels for all variables passed from `variables`
@@ -42,7 +42,7 @@ class Data:
     """
     def __init__(self, df, variables, actual, expected):
         self.df = df
-        self.vars = variables
+        self.var_list = variables
         self.actual = actual
         self.expected = expected
         self.__getLevels()
@@ -50,7 +50,7 @@ class Data:
     def __getLevels(self):
         self.levels = {}
         #Putting factor levels into the dictionary
-        for v in self.vars:
+        for v in self.var_list:
             self.levels[v]=self.df[v].unique()
 class Options:
     """
@@ -239,7 +239,7 @@ class Optimize:
         else:
             self.bounds_lower = {}
             self.bounds_upper = {}
-            for var in self.options.data.vars:
+            for var in self.options.data.var_list:
                 self.bounds_lower[var]=[0.8]*len(self.options.data.levels[var])
                 self.bounds_upper[var]=[1.2]*len(self.options.data.levels[var])
 
@@ -248,7 +248,7 @@ class Optimize:
     def __createCredibility(self):
         self.bounds_lower = {}
         self.bounds_upper = {}
-        for v in self.options.data.vars:
+        for v in self.options.data.var_list:
             lb = []
             ub = []
             x = 0
@@ -337,8 +337,8 @@ class Optimize:
         print("Starting optimization date and time: ", time.asctime( time.localtime(time.time()) ))
         print("__________________________________________________________")
         current = 1
-        for f in self.options.data.vars:
-            print("Currently working on "+f+", variable "+str(current)+"/"+str(len(self.options.data.vars))+".")
+        for f in self.options.data.var_list:
+            print("Currently working on "+f+", variable "+str(current)+"/"+str(len(self.options.data.var_list))+".")
             print("Absolute Deviation before working on "+f+": "+ str(sum(abs(self.options.data.df[self.options.data.expected].values *
                             sum(self.options.data.df[self.options.data.actual].values) /
                             sum(self.options.data.df[self.options.data.expected].values)
