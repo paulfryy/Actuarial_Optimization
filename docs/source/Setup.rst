@@ -1,20 +1,20 @@
 .. _Setup:
 
-
+#####
 Setup
-=====
+#####
 
 This page is to be used as a starting guide, giving explanations of data needed.
 
-
+****
 Data
-####
+****
 
 To start, data needs to be brought into an importable file. The easiest is an excel file through the use of SQL. The column names can vary,
 but certain values must be represented.
 
 Columns
-*******
+=======
 
 Most of the columns can vary, but each dataset will need to contain a certain set of columns.
 
@@ -26,7 +26,7 @@ Most of the columns can vary, but each dataset will need to contain a certain se
 
 
 Cleaning and Filtering
-**********************
+======================
 
 **Note: This example is using the ``pandas`` package for Python to manipulate DataFrames.**
 
@@ -35,12 +35,13 @@ A few useful commands to know for cleaning Pandas DataFrames.
 Assuming a DataFrame named `df`.
 
 Removing NA/Null/NaNs
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 The command ``df.dropna(subset=["colname"])`` is used to remove rows containing NA's in the column called `colname`
 
 
-**Example**
+Example
+"""""""
 
 .. code-block:: python
 
@@ -51,11 +52,12 @@ The command ``df.dropna(subset=["colname"])`` is used to remove rows containing 
        
     
 Subsetting on Conditions
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 To remove rows from the dataframe based on a condition, you can use ``df.loc[df["colname"] == condition]``
 
-**Example**
+Example
+"""""""
 
 .. code-block:: python
 
