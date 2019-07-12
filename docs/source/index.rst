@@ -30,7 +30,7 @@ The requirements to be able to use this package are as follows:
 
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 3
    :caption: Contents:
 
    Modules<modules>
