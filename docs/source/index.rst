@@ -44,7 +44,7 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
+* :ref:`Setup <Setup>`
 * :ref:`Tutorial/Walkthrough <Tutorial>`
 * :ref:`How to import local modules <Modules>`
 
