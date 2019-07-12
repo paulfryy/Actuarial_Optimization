@@ -36,6 +36,7 @@ The requirements to be able to use this package are as follows:
    Modules<modules>
    Full Tutorial<Tutorial>
    Download Source Files<https://github.com/paulfryy/Actuarial_Optimization>
+   Setup and how to Clean Data with Pandas<Setup>
 
 
 
@@ -46,7 +47,7 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`Setup <Setup>`
 * :ref:`Tutorial/Walkthrough <Tutorial>`
-* :ref:`How to import local modules <Modules>`
+* :ref:`How to Import Local Modules <Modules>`
 
 
 Utilized Packages
