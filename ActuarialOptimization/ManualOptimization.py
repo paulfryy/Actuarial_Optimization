@@ -334,7 +334,7 @@ class Optimize:
 
         endingAE = sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected])
         endingdev = res.fun
-
+        print(res.message)
         print("Ending optimization date and time",time.asctime( time.localtime(time.time()) ))
 
         return final_dict, endingAE, endingdev
