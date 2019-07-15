@@ -146,38 +146,6 @@ class Options:
         self.workers = workers
 
 
-
-    def __abs_dev(self, factorlist, variable):
-        """
-        :param factorlist: The current set of factors for the given variable.
-        :param variable: The variable currently being optimized.
-        :return abs_dev: The resulting sum of absolute deviations of Actual vs Expected across all policies for the given factorlist.
-        """
-        global factor_dict
-        factor_dict = {}
-        for i in range(len(self.data.levels[variable])):
-            factor_dict[self.data.levels[variable][i]] = factorlist[i]
-
-        abs_dev = 0
-        new_exp_weighted = 0
-
-        for i in range(len(self.data.df[variable])):
-            new_exp_weighted += self.data.df[self.data.expected][i] * factor_dict[self.data.df[variable][i]]
-
-        new_AE = sum(self.data.df[self.data.actual]) / new_exp_weighted
-
-        for i in range(len(self.data.df[variable])):
-            abs_dev += abs(self.data.df[self.data.expected][i] * factor_dict[self.data.df[variable][i]] * new_AE -
-                           self.data.df[self.data.actual][i])
-
-        if new_AE < self.data._initialAE * 0.9 or new_AE > self.data._initialAE * 1.1:
-            abs_dev += 1e10
-
-        return abs_dev
-
-
-
-
 class Optimize:
     """
     Class that runs the optimization based off of :class:`Data` and :class:`Options`.
@@ -306,7 +274,7 @@ class Optimize:
 
         for i in range(len(self.options.data.levels[factor])):
             factor_dict[self.options.data.levels[factor][i]] = factorlist[i]
-        self.options.data.df[self.options.data.expected]=self.options.data.df[self.options.data.expected]\
+        self.options.data.df[self.options.data.expected] = self.options.data.df[self.options.data.expected]\
                                                          * self.options.data.df[factor].map(factor_dict)
 
 
