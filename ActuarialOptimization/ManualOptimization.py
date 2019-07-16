@@ -161,6 +161,12 @@ class Optimize:
     :type options: :class:`Options`
     :type credibility: bool, optional
     :type lifeYears: str, optional
+
+    :ivar bounds_lower: Dictionary containing lower bounds for the factor changes based off of credibility.
+    :ivar bounds_upper: Dictionary containing upper bounds for the factor changes based off of credibility.
+    
+    :type bounds_lower: dict
+    :type bounder_upper: dict
     """
 
     def __init__(self, options, credibility = False, lifeYears = None):
@@ -228,7 +234,6 @@ class Optimize:
                                           sum(self.options.data.df[self.options.data.actual]) / sum(
                                       self.options.data.df[self.options.data.expected]))
                     bound = AEratio * credibility + (1 - credibility)
-
                     if bound < 1:
                         ub.append(1)
                         lb.append(bound)
@@ -239,7 +244,7 @@ class Optimize:
                         ub.append(1)
                         lb.append(1)
                 except(RuntimeWarning):
-                    raise RuntimeWarning("Unexpected value in "+str(v)+". Hint: Check for nulls.")
+                    raise RuntimeWarning("Unexpected value in "+str(v)+" - "+str(f)+". Hint: Check for nulls or 0 Life Years.")
             self.bounds_lower[v] = lb
             self.bounds_upper[v] = ub
 
