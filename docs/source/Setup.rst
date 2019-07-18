@@ -32,7 +32,7 @@ Cleaning and Filtering
 
 A few useful commands to know for cleaning Pandas DataFrames.
 
-Assuming a `DataFrame<https://pandas.pydata.org/pandas-docs/stable/reference/frame.html>`_ named `df`.
+Assuming a `DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/frame.html>`_ named `df`.
 
 Removing NA/Null/NaNs
 ---------------------
