@@ -164,7 +164,7 @@ class Optimize:
 
     :ivar bounds_lower: Dictionary containing lower bounds for the factor changes based off of credibility.
     :ivar bounds_upper: Dictionary containing upper bounds for the factor changes based off of credibility.
-    
+
     :type bounds_lower: dict
     :type bounder_upper: dict
     """
@@ -267,7 +267,7 @@ class Optimize:
         abs_dev = sum(abs(self.options.data.df[self.options.data.expected] * self.options.data.df[variable].map(factor_dict) *
                           new_AE - self.options.data.df[self.options.data.actual].values))
 
-        if new_AE < self.options.data._initialAE * 0.9 or new_AE > self.options.data._initialAE * 1.1:
+        if new_AE < self.options.data._initialAE * 0.95 or new_AE > self.options.data._initialAE * 1.05:
             abs_dev += 1e10
         return abs_dev
 
