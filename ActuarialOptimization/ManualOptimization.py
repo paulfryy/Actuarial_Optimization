@@ -21,14 +21,17 @@ class Data:
 
     :param df: The `pandas` dataframe containing final filtered data. Note: Data should already be scrubbed, containing NaNs can cause problems further down the line.
         best practice is to already subset data on preliminary conditions.
-    :param variables: A list of all variable names as shown in their respective columns.
+    :param variables: A list of all variable names as shown in their respective columns (for use in optimizing sequentially). This parameter also takes a dictionary if optimizing all variables at once is desired.
     :param actual: A string containing the column name of Incurred Claim Costs (Weighted?)
     :param expected: A string containing the column name of the Manual Expected Claim Costs (Weighted?)
+    :param inOrder: A boolean containing the option to run the optimization sequentially (True), or all factors at once (False). Default is `True`.
+
 
     :type df: `Pandas DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
-    :type variables: list
+    :type variables: list, dict
     :type actual: str
     :type expected: str
+    :type inOrder: bool
 
     :ivar df: The Pandas dataframe containing underlying data
     :ivar var_list: Variables being optimized
@@ -40,9 +43,10 @@ class Data:
 
 
     """
-    def __init__(self, df, variables, actual, expected):
+    def __init__(self, df, variables, actual, expected, inOrder=True):
         self.df = df
         self.var_list = variables
+        self.inOrder = inOrder
         self.actual = actual
         self.expected = expected
         self.__getLevels()
@@ -282,6 +286,34 @@ class Optimize:
         self.options.data.df[self.options.data.expected] = self.options.data.df[self.options.data.expected]\
                                                          * self.options.data.df[factor].map(factor_dict)
 
+    def __abs_dev_inOrder(self, factorlist):
+        """
+
+        :param factorlist: The current set of factors for the given variables.
+        :return abs_dev: The resulting sum of absolute deviations of Actual vs Expected across all policies for the given factorlist.
+        """
+        variables = self.options.data.var_list
+        global factor_dict
+        factor_dict = {}
+        overall = 0
+        for v in variables:
+            factor_dict[v]={}
+            for i in range(len(self.options.data.levels[v])):
+                factor_dict[v][self.options.data.levels[v][i]] = factorlist[overall]
+                overall += 1
+        self.options.data.df["new_exp_weighted_factors"]=1
+        for var in variables:
+            self.options.data.df["new_exp_weighted_factors"]=self.options.data.df["new_exp_weighted_factors"]*\
+                                                             self.options.data.df[var].map(factor_dict[var])
+        new_exp_weighted = sum(self.options.data.df[self.options.data.expected]*self.options.data.df["new_exp_weighted_factors"])
+
+        new_AE = sum(self.options.data.df[self.options.data.actual].values) / new_exp_weighted
+        abs_dev = sum(
+            abs(self.options.data.df[self.options.data.expected]*self.options.data.df["new_exp_weighted_factors"] *
+                new_AE - self.options.data.df[self.options.data.actual].values))
+        if new_AE < self.options.data._initialAE * 0.95 or new_AE > self.options.data._initialAE * 1.05:
+            abs_dev += 1e10
+        return abs_dev
 
 
     def run(self):
@@ -309,39 +341,75 @@ class Optimize:
         print("Starting AE", sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected]))
         print("Starting optimization date and time: ", time.asctime( time.localtime(time.time()) ))
         print("__________________________________________________________")
-        current = 1
-        for f in self.options.data.var_list:
-            print("Currently working on "+f+", variable "+str(current)+"/"+str(len(self.options.data.var_list))+".")
-            print("Absolute Deviation before working on "+f+": "+ str(sum(abs(self.options.data.df[self.options.data.expected].values *
-                            sum(self.options.data.df[self.options.data.actual].values) /
-                            sum(self.options.data.df[self.options.data.expected].values)
-                            - self.options.data.df[self.options.data.actual].values))))
-            current += 1
-            xmin = self.bounds_lower[f]
-            xmax = self.bounds_upper[f]
+
+        if self.options.data.inOrder: #Meaning to optimize sequentially
+            current = 1
+            for f in self.options.data.var_list:
+                print("Currently working on "+f+", variable "+str(current)+"/"+str(len(self.options.data.var_list))+".")
+                print("Absolute Deviation before working on "+f+": "+ str(sum(abs(self.options.data.df[self.options.data.expected].values *
+                                sum(self.options.data.df[self.options.data.actual].values) /
+                                sum(self.options.data.df[self.options.data.expected].values)
+                                - self.options.data.df[self.options.data.actual].values))))
+                current += 1
+                xmin = self.bounds_lower[f]
+                xmax = self.bounds_upper[f]
+                bounds = [(low, high) for low, high in zip(xmin, xmax)]
+
+                res = scipy.optimize.differential_evolution(self.__abs_dev, bounds = bounds, args = (f,),
+                                                            strategy = self.options.strategy, maxiter = self.options.maxiter,
+                                                            popsize = self.options.popsize, tol = self.options.tol,
+                                                            mutation = self.options.mutation, recombination = self.options.recombination,
+                                                            seed = self.options.seed, callback = self.options.callback,
+                                                            disp = self.options.disp, polish = self.options.polish,
+                                                            init = self.options.init, atol = self.options.atol,
+                                                            updating = self.options.updating, workers= self.options.workers)
+                temp_dict = {}
+
+                for k in range(len(self.options.data.levels[f])):
+                    temp_dict[self.options.data.levels[f][k]] = res.x[k]
+                final_dict[f]=temp_dict.copy()
+                self.__change_manual_expected(res.x, f)
+                print("Absolute Deviation after working on "+f+": "+ str(res.fun))
+                print("==========================================================")
+
+            endingAE = sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected])
+            endingdev = res.fun
+            print(res.message)
+            print("Ending optimization date and time",time.asctime( time.localtime(time.time()) ))
+
+            return final_dict, endingAE, endingdev
+
+        if not self.options.data.inOrder: #Meaning to optimize all at once
+            xmin = []
+            xmax = []
+            for var in self.options.data.var_list:
+                xmin.extend(self.bounds_lower[var])
+                xmax.extend(self.bounds_upper[var])
             bounds = [(low, high) for low, high in zip(xmin, xmax)]
-            res = scipy.optimize.differential_evolution(self.__abs_dev, bounds = bounds, args = (f,),
-                                                        strategy = self.options.strategy, maxiter = self.options.maxiter,
+            res = scipy.optimize.differential_evolution(self.__abs_dev_inOrder, bounds = bounds,
+                                                        strategy = self.options.strategy,
+                                                        maxiter = self.options.maxiter,
                                                         popsize = self.options.popsize, tol = self.options.tol,
-                                                        mutation = self.options.mutation, recombination = self.options.recombination,
+                                                        mutation = self.options.mutation,
+                                                        recombination = self.options.recombination,
                                                         seed = self.options.seed, callback = self.options.callback,
                                                         disp = self.options.disp, polish = self.options.polish,
                                                         init = self.options.init, atol = self.options.atol,
-                                                        updating = self.options.updating, workers= self.options.workers)
-            temp_dict = {}
-            for k in range(len(self.options.data.levels[f])):
-                temp_dict[self.options.data.levels[f][k]] = res.x[k]
-            final_dict[f]=temp_dict.copy()
-            self.__change_manual_expected(res.x, f)
-            print("Absolute Deviation after working on "+f+": "+ str(res.fun))
+                                                        updating = self.options.updating,
+                                                        workers = self.options.workers)
 
-            print("==========================================================")
+            final_dict = {}
+            counter = 0
+            for key in self.options.data.levels.keys():
+                final_dict[key]={}
+                for level in self.options.data.levels[key]:
+                    final_dict[key][level]=res.x[counter]
+                    counter += 1
+            endingAE = sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected]*self.options.data.df["new_exp_weighted_factors"])
+            endingdev = res.fun
+            print(res.message)
+            print("Ending optimization date and time",time.asctime( time.localtime(time.time()) ))
 
-        endingAE = sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected])
-        endingdev = res.fun
-        print(res.message)
-        print("Ending optimization date and time",time.asctime( time.localtime(time.time()) ))
-
-        return final_dict, endingAE, endingdev
+            return final_dict, endingAE, endingdev
 
 
