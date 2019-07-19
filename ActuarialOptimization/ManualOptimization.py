@@ -195,7 +195,7 @@ class Optimize:
 
     def setCredibility(self, newCred):
         """
-        :param newCred: Boolean of whether or not to use credibility.
+        :param newCred: Boolean for whether or not to use credibility.
         :type newCred: bool
         """
         self.credibility = newCred
