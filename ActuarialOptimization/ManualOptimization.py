@@ -28,7 +28,7 @@ class Data:
 
 
     :type df: `Pandas DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
-    :type variables: list, dict
+    :type variables: list
     :type actual: str
     :type expected: str
     :type inOrder: bool
