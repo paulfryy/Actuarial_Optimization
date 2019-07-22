@@ -52,6 +52,8 @@ The :class:`~ManualOptimizationAE.Data` class is created. Note the second argume
 The third and fourth arguments are the column names for the Incurred Claim Amounts (weighted), and the current Manual Expected Claim Amounts (weighted).
 Column Names can vary, so ensure they are entered correctly for the dataset being used.
 
+It's at this point where the optional argument ``inOrder`` can be specified. If the Data class is passed ``inOrder = True`` (default), it will optimize the variables in the order they are given in the list. If ``inOrder = False``, then all variables are optimized simultaneously (this takes longer to run but can yield better results).
+
 .. code-block:: python
 
        >>> dataClass = mo.Data(mydata, ["SIC_Group_LDI", "Male_Pct", "SG_RR", "STD_Indicator", "SG_Max_Ben", "SG_Blue_Pct",
