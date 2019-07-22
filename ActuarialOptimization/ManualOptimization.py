@@ -195,7 +195,7 @@ class Optimize:
 
     def setCredibility(self, newCred):
         """
-        :param newCred: Boolean for whether or not to use credibility.
+        :param newCred: Boolean of whether or not to use credibility.
         :type newCred: bool
         """
         self.credibility = newCred
@@ -386,6 +386,7 @@ class Optimize:
                 xmin.extend(self.bounds_lower[var])
                 xmax.extend(self.bounds_upper[var])
             bounds = [(low, high) for low, high in zip(xmin, xmax)]
+            print("Calculating... please wait")
             res = scipy.optimize.differential_evolution(self.__abs_dev_inOrder, bounds = bounds,
                                                         strategy = self.options.strategy,
                                                         maxiter = self.options.maxiter,
