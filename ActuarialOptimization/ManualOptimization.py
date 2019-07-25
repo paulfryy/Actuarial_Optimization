@@ -18,31 +18,24 @@ class Data:
 
     """
     Data class used in optimization.
-
     :param df: The `pandas` dataframe containing final filtered data. Note: Data should already be scrubbed, containing NaNs can cause problems further down the line.
         best practice is to already subset data on preliminary conditions.
     :param variables: A list of all variable names as shown in their respective columns (for use in optimizing sequentially). This parameter also takes a dictionary if optimizing all variables at once is desired.
     :param actual: A string containing the column name of Incurred Claim Costs (Weighted?)
     :param expected: A string containing the column name of the Manual Expected Claim Costs (Weighted?)
     :param inOrder: A boolean containing the option to run the optimization sequentially (True), or all factors at once (False). Default is `True`.
-    :param grouped: A boolean containing the option to group the data based off on the variables given. Instead of looking at the data at an individual sample level and finding aggregate absolute deviation, it will group the data by variable factor level, and find the absolute deviation within these groups (and sum them up). Default is False, and if inOrder = True, this must be set to False. 
-
+    :param grouped: A boolean containing the option to group the data based off on the variables given. Instead of looking at the data at an individual sample level and finding aggregate absolute deviation, it will group the data by variable factor level, and find the absolute deviation within these groups (and sum them up). Default is False, and if inOrder = True, this must be set to False.
     :type df: `Pandas DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html>`_
     :type variables: list
     :type actual: str
     :type expected: str
     :type inOrder: bool
     :type grouped: bool
-
     :ivar df: The Pandas dataframe containing underlying data
     :ivar var_list: Variables being optimized
     :ivar actual: The name of the Actual Incurred Claims column in df
     :ivar expected: The name of the Manual Expected Claims column in df
     :ivar levels: The dictionary containing all factor levels for all variables passed from `variables`
-
-
-
-
     """
     def __init__(self, df, variables, actual, expected, inOrder=True, grouped = False):
         self.df = df
@@ -66,11 +59,9 @@ class Options:
     """
     Class containing specifications about optimization technique. Most of the arguments can be left as defaults.
     These arguments are transferred to the `SciPy` optimization technique `differential_evolution <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution>`_
-
     :param data: An object of the type :class:`Data`
     :param strategy: The differential evolution strategy to use.
      Should be one of:
-
         * ‘best1bin’
         * ‘best1exp’
         * ‘rand1exp’
@@ -83,7 +74,6 @@ class Options:
         * ‘best2bin’
         * ‘rand2bin’
         * ‘rand1bin’
-
         The default is ‘best1bin’.
     :param maxiter: The maximum number of generations over which the entire population is evolved. The maximum number of function evaluations (with no polishing) is: ``(maxiter + 1) * popsize * len(x)``
     :param popsize: A multiplier for setting the total population size. The population has ``popsize * len(x)`` individuals (unless the initial population is supplied via the init keyword).
@@ -95,22 +85,15 @@ class Options:
     :param callback: A function to follow the progress of the minimization. ``xk`` is the current value of ``x0``. val represents the fractional value of the population convergence. When ``val`` is greater than one the function halts. If callback returns `True`, then the minimization is halted (any polishing is still carried out).
     :param polish: If True (default), then `scipy.optimize.minimize <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html#scipy.optimize.minimize>`_ with the L-BFGS-B method is used to polish the best population member at the end, which can improve the minimization slightly.
     :param init: Specify which type of population initialization is performed. Should be one of:
-
         * ‘latinhypercube’
         * ‘random’
         * array specifying the initial population. The array should have shape (M, len(x)), where len(x) is the number of parameters. init is clipped to bounds before use.
-
         The default is ‘latinhypercube’. Latin Hypercube sampling tries to maximize coverage of the available parameter space. ‘random’ initializes the population randomly - this has the drawback that clustering can occur, preventing the whole of parameter space being covered. Use of an array to specify a population subset could be used, for example, to create a tight bunch of initial guesses in an location where the solution is known to exist, thereby reducing time for convergence.
     :param atol: Absolute tolerance for convergence, the solving stops when ``np.std(pop) <= atol + tol * np.abs(np.mean(population_energies))``, where and atol and tol are the absolute and relative tolerance respectively.
     :param updating: If 'immediate', the best solution vector is continuously updated within a single generation [4]. This can lead to faster convergence as trial vectors can take advantage of continuous improvements in the best solution. With 'deferred', the best solution vector is updated once per generation. Only 'deferred' is compatible with parallelization, and the workers keyword can over-ride this option
-
         **Note: Seems to not converge in finite time? I wouldn't utilize this argument**
-
     :param workers: If workers is an int the population is subdivided into workers sections and evaluated in parallel (uses **multiprocessing.Pool**). Supply -1 to use all available CPU cores. Alternatively supply a map-like callable, such as multiprocessing.Pool.map for evaluating the population in parallel. This evaluation is carried out as workers ``(func, iterable)``. This option will override the updating keyword to ``updating='deferred'`` if ``workers != 1``. Requires that func be pickleable.
-
         **Note: See above note**
-
-
     :type data: :class:`Data`
     :type strategy: str, optional
     :type maxiter: int, optional
@@ -159,22 +142,16 @@ class Options:
 class Optimize:
     """
     Class that runs the optimization based off of :class:`Data` and :class:`Options`.
-
     :param options: The options class created to pass to     These arguments are transferred to the `SciPy` optimization technique `differential_evolution <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution>`_
     :param credibility: Whether or not to factor in credibility, based on Life Years in the segment. If set to True, `lifeYears` must also be given an argument.
-
         Default is ``False``
     :param lifeYears: The name of the column in the ``df`` which was passed to the :class:`Data` class which represents the Life Years per policy.
-
         Default is ``None``
-
     :type options: :class:`Options`
     :type credibility: bool, optional
     :type lifeYears: str, optional
-
     :ivar bounds_lower: Dictionary containing lower bounds for the factor changes based off of credibility.
     :ivar bounds_upper: Dictionary containing upper bounds for the factor changes based off of credibility.
-
     :type bounds_lower: dict
     :type bounder_upper: dict
     """
@@ -260,7 +237,6 @@ class Optimize:
 
     def __abs_dev(self, factorlist, variable):
         """
-
         :param factorlist: The current set of factors for the given variable.
         :param variable: The variable currently being optimized.
         :return abs_dev: The resulting sum of absolute deviations of Actual vs Expected across all policies for the given factorlist.
@@ -294,7 +270,6 @@ class Optimize:
 
     def __abs_dev_inOrder(self, factorlist):
         """
-
         :param factorlist: The current set of factors for the given variables.
         :return abs_dev: The resulting sum of absolute deviations of Actual vs Expected across all policies for the given factorlist.
         """
@@ -324,7 +299,6 @@ class Optimize:
 
     def __abs_dev_grouped(self, factorlist):
         """
-
         :param factorlist: The current set of factors for the given variables.
         :return abs_dev: The resulting sum of absolute deviations of Actual vs Expected across all policies for the given factorlist.
         """
@@ -365,11 +339,8 @@ class Optimize:
         """
         Runs the `differential_evolution <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html#scipy.optimize.differential_evolution>`_
         minimizing the absolute deviation of Manual Expected to Incurred by setting sets of factors to be multiplied by the original Manual Expected.
-
         :return: Tuple of the a dictionary containing variables and their factors, along with minimized absolute deviation and AE.
-
         **Note: When using** ``Optimize.run()``, **it should be assigned as follows.**
-
         ``final_dictionary, endingAE, endingAbsDev = myOptimize.run()``
         """
         print("==========================================================")
@@ -434,7 +405,7 @@ class Optimize:
                 expecteds = []
                 for var in self.options.data.var_list:
                     expecteds = np.append(expecteds, (
-                        self.options.data.df[expected].groupby(self.options.data.df[var])).sum())
+                        self.options.data.df[self.options.data.expected].groupby(self.options.data.df[var])).sum())
                     actuals = np.append(actuals, (
                         self.options.data.df[self.options.data.actual].groupby(self.options.data.df[var])).sum())
 
@@ -515,4 +486,3 @@ class Optimize:
                 print("Ending optimization date and time",time.asctime( time.localtime(time.time()) ))
 
                 return final_dict, endingAE, endingdev
-
