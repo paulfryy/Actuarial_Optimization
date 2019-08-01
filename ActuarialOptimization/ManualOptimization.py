@@ -147,14 +147,22 @@ class Optimize:
         Default is ``False``
     :param lifeYears: The name of the column in the ``df`` which was passed to the :class:`Data` class which represents the Life Years per policy.
         Default is ``None``
+
     :type options: :class:`Options`
     :type credibility: bool, optional
+
     :type lifeYears: str, optional
     :ivar bounds_lower: Dictionary containing lower bounds for the factor changes based off of credibility.
     :ivar bounds_upper: Dictionary containing upper bounds for the factor changes based off of credibility.
+    :ivar res:  `OptimizeResult <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.OptimizeResult.html#scipy.optimize.OptimizeResult>'_ containing information about the Differential Evolution result.
+    :ivar niter: Number of absolute deviation evaluations in total.
     :type bounds_lower: dict
     :type bounder_upper: dict
-    """
+    :type bounds: dict
+    :type res: `OptimizeResult <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.OptimizeResult.html#scipy.optimize.OptimizeResult>'_
+    :type niter: int
+   
+   """
 
     def __init__(self, options, credibility = False, lifeYears = None):
         assert isinstance(options, Options), "Parameter 'options' must be an instance of the Options class."
@@ -174,7 +182,8 @@ class Optimize:
         self.bounds_lower = {}
         self.bounds_upper = {}
         self.__checkCredibility()
-
+        self.niter = 0
+        self.res = None
 
     def setCredibility(self, newCred):
         """
@@ -209,10 +218,12 @@ class Optimize:
     def __createCredibility(self):
         self.bounds_lower = {}
         self.bounds_upper = {}
+        self.bounds = {}
         for v in self.options.data.var_list:
             lb = []
             ub = []
             x = 0
+            self.bounds[v]={}
             for f in self.options.data.levels[v]:
                 try:
                     credibility = np.sqrt(self.options.data.df.loc[self.options.data.df[v] == f, self.lifeYears].sum() / 400000)
@@ -222,12 +233,15 @@ class Optimize:
                                       self.options.data.df[self.options.data.expected]))
                     bound = AEratio * credibility + (1 - credibility)
                     if bound < 1:
+                        self.bounds[v][f]=[1,max(0.9,bound)]
                         ub.append(1)
-                        lb.append(bound)
+                        lb.append(max(0.9,bound))
                     if bound >= 1:
-                        ub.append(bound)
+                        self.bounds[v][f]=[min(bound,1.1),1]
+                        ub.append(min(bound,1.1))
                         lb.append(1)
                     if np.isnan(bound):
+                        self.bounds[v][f]=[1,1]
                         ub.append(1)
                         lb.append(1)
                 except(RuntimeWarning):
@@ -255,6 +269,9 @@ class Optimize:
 
         if new_AE < self.options.data._initialAE * 0.95 or new_AE > self.options.data._initialAE * 1.05:
             abs_dev += 1e10
+                self.niter += 1
+        if self.niter % 100 == 0:
+            print("Just finished iteration ",self.niter)
         return abs_dev
 
 
@@ -294,6 +311,9 @@ class Optimize:
                 new_AE - self.options.data.df[self.options.data.actual].values))
         if new_AE < self.options.data._initialAE * 0.95 or new_AE > self.options.data._initialAE * 1.05:
             abs_dev += 1e10
+                self.niter += 1
+        if self.niter % 100 == 0:
+            print("Just finished iteration ",self.niter)
         return abs_dev
 
 
@@ -302,6 +322,8 @@ class Optimize:
         :param factorlist: The current set of factors for the given variables.
         :return abs_dev: The resulting sum of absolute deviations of Actual vs Expected across all policies for the given factorlist.
         """
+
+
         variables = self.options.data.var_list
         global factor_dict
         factor_dict = {}
@@ -314,10 +336,10 @@ class Optimize:
                 factor_dict[v][self.options.data.levels[v][i]] = factorlist[overall]
                 overall += 1
         self.options.data.df["new_exp_weighted_factors"]=1
+
         for var in variables:
             self.options.data.df["new_exp_weighted_factors"]=self.options.data.df["new_exp_weighted_factors"]*\
                                                              self.options.data.df[var].map(factor_dict[var])
-
 
         self.options.data.df["new_exp_weighted_AO"] = self.options.data.df[self.options.data.expected]*self.options.data.df["new_exp_weighted_factors"]
         new_exp_weighted = self.options.data.df["new_exp_weighted_AO"].sum()
@@ -327,10 +349,12 @@ class Optimize:
 
         new_AE = sum(self.options.data.df[self.options.data.actual].values) / new_exp_weighted
 
-        abs_dev = abs(expecteds*new_AE - actuals).sum()
-
+        abs_dev = sum(abs(expecteds*new_AE - actuals))
         if new_AE < self.options.data._initialAE * 0.95 or new_AE > self.options.data._initialAE * 1.05:
             abs_dev += 1e10
+        self.niter += 1
+        if self.niter % 100 == 0:
+            print("Just finished iteration ",self.niter)
         return abs_dev
 
 
@@ -373,7 +397,7 @@ class Optimize:
                 xmax = self.bounds_upper[f]
                 bounds = [(low, high) for low, high in zip(xmin, xmax)]
 
-                res = scipy.optimize.differential_evolution(self.__abs_dev, bounds = bounds, args = (f,),
+                self.res = scipy.optimize.differential_evolution(self.__abs_dev, bounds = bounds, args = (f,),
                                                             strategy = self.options.strategy, maxiter = self.options.maxiter,
                                                             popsize = self.options.popsize, tol = self.options.tol,
                                                             mutation = self.options.mutation, recombination = self.options.recombination,
@@ -386,13 +410,13 @@ class Optimize:
                 for k in range(len(self.options.data.levels[f])):
                     temp_dict[self.options.data.levels[f][k]] = res.x[k]
                 final_dict[f]=temp_dict.copy()
-                self.__change_manual_expected(res.x, f)
-                print("Absolute Deviation after working on "+f+": "+ str(res.fun))
+                self.__change_manual_expected(self.res.x, f)
+                print("Absolute Deviation after working on "+f+": "+ str(self.res.fun))
                 print("==========================================================")
 
             endingAE = sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected])
-            endingdev = res.fun
-            print(res.message)
+            endingdev = self.res.fun
+            print(self.res.message)
             print("Ending optimization date and time",time.asctime( time.localtime(time.time()) ))
 
             return final_dict, endingAE, endingdev
@@ -423,7 +447,7 @@ class Optimize:
                     xmax.extend(self.bounds_upper[var])
                 bounds = [(low, high) for low, high in zip(xmin, xmax)]
                 print("Calculating... please wait")
-                res = scipy.optimize.differential_evolution(self.__abs_dev_grouped, bounds = bounds,
+                self.res = scipy.optimize.differential_evolution(self.__abs_dev_grouped, bounds = bounds,
                                                             strategy = self.options.strategy,
                                                             maxiter = self.options.maxiter,
                                                             popsize = self.options.popsize, tol = self.options.tol,
@@ -440,12 +464,12 @@ class Optimize:
                 for key in self.options.data.levels.keys():
                     final_dict[key] = {}
                     for level in self.options.data.levels[key]:
-                        final_dict[key][level] = res.x[counter]
+                        final_dict[key][level] = self.res.x[counter]
                         counter += 1
                 endingAE = sum(self.options.data.df[self.options.data.actual]) / sum(
                     self.options.data.df[self.options.data.expected] * self.options.data.df["new_exp_weighted_factors"])
-                endingdev = res.fun
-                print(res.message)
+                endingdev = self.res.fun
+                print(self.res.message)
                 print("Ending optimization date and time", time.asctime(time.localtime(time.time())))
 
                 return final_dict, endingAE, endingdev
@@ -461,7 +485,7 @@ class Optimize:
                     xmax.extend(self.bounds_upper[var])
                 bounds = [(low, high) for low, high in zip(xmin, xmax)]
                 print("Calculating... please wait")
-                res = scipy.optimize.differential_evolution(self.__abs_dev_inOrder, bounds = bounds,
+                self.res = scipy.optimize.differential_evolution(self.__abs_dev_inOrder, bounds = bounds,
                                                             strategy = self.options.strategy,
                                                             maxiter = self.options.maxiter,
                                                             popsize = self.options.popsize, tol = self.options.tol,
@@ -478,11 +502,14 @@ class Optimize:
                 for key in self.options.data.levels.keys():
                     final_dict[key]={}
                     for level in self.options.data.levels[key]:
-                        final_dict[key][level]=res.x[counter]
+                        final_dict[key][level]=self.res.x[counter]
                         counter += 1
                 endingAE = sum(self.options.data.df[self.options.data.actual])/sum(self.options.data.df[self.options.data.expected]*self.options.data.df["new_exp_weighted_factors"])
-                endingdev = res.fun
-                print(res.message)
+                endingdev = self.res.fun
+                print(self.res.message)
                 print("Ending optimization date and time",time.asctime( time.localtime(time.time()) ))
 
                 return final_dict, endingAE, endingdev
+
+
+
