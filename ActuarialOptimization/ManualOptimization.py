@@ -159,7 +159,6 @@ class Optimize:
     :type bounds_lower: dict
     :type bounder_upper: dict
     :type bounds: dict
-    :type res: `OptimizeResult <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.OptimizeResult.html#scipy.optimize.OptimizeResult>'_
     :type niter: int
    
    """
