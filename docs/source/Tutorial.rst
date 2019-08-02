@@ -52,7 +52,7 @@ The :class:`~ManualOptimizationAE.Data` class is created. Note the second argume
 The third and fourth arguments are the column names for the Incurred Claim Amounts (weighted), and the current Manual Expected Claim Amounts (weighted).
 Column Names can vary, so ensure they are entered correctly for the dataset being used.
 
-It's at this point where the optional argument ``inOrder`` can be specified. If the Data class is passed ``inOrder = True`` (default), it will optimize the variables in the order they are given in the list. If ``inOrder = False``, then all variables are optimized simultaneously (this takes longer to run but can yield better results).
+It's at this point where the optional argument ``inOrder`` can be specified. If the Data class is passed ``inOrder = True`` (default), it will optimize the variables in the order they are given in the list. If ``inOrder = False``, then all variables are optimized simultaneously (this takes longer to run but can yield better results). This also comes with the optional parameter ``grouped``(default False), where if set to ``True``, will group the variables by segments (summing up their ``actual`` and ``expected`` into one single number (similar to what would be seen in a pivot table). This leads to double counting, but can provide more accurate changes. 
 
 .. code-block:: python
 
@@ -71,8 +71,10 @@ Next, an instance of :class:`Optimize` is created, passing it myOptions (the ins
 indicator noting that there should be a credibility weight applied to each segment. Since this argument is set to ``True``, ``lifeYears``
 must be given the column name that represents the total lifeYears in a policy.
 
+
+
 **Note:** If set to False (default), each factor level can change withing 20% of its original (may lead to overcompensation
-due to small sample sizes)
+due to small sample sizes). If True, the lifeYears argument will be used to create a lower bound (the maximum of 0.9 and whatever the credibility says the bound can be), and an upper bound (the minimum of 1.1 and whatever the credibility says the bound can be).
 
 .. code-block:: python
 
