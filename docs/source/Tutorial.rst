@@ -52,7 +52,7 @@ The :class:`~ManualOptimizationAE.Data` class is created. Note the second argume
 The third and fourth arguments are the column names for the Incurred Claim Amounts (weighted), and the current Manual Expected Claim Amounts (weighted).
 Column Names can vary, so ensure they are entered correctly for the dataset being used.
 
-It's at this point where the optional argument ``inOrder`` can be specified. If the Data class is passed ``inOrder = True`` (default), it will optimize the variables in the order they are given in the list. If ``inOrder = False``, then all variables are optimized simultaneously (this takes longer to run but can yield better results). This also comes with the optional parameter ``grouped`` (default False), where if set to ``True``, will group the variables by segments (summing up their ``actual`` and ``expected`` into one single number (similar to what would be seen in a pivot table). This leads to double counting, but can provide more accurate changes. 
+It's at this point where the optional argument ``inOrder`` can be specified. If the Data class is passed ``inOrder = True`` (default), it will optimize the variables in the order they are given in the list. If ``inOrder = False``, then all variables are optimized simultaneously (this takes longer to run but can yield better results). This also comes with the optional parameter ``grouped`` (default False), where if set to ``True``, will group the variables by segments (summing up their ``actual`` and ``expected`` into one single number - similar to what would be seen in a pivot table). This leads to double counting, but can provide more accurate changes. 
 
 .. code-block:: python
 
