@@ -155,34 +155,34 @@ class Optimize:
     :ivar bounds_lower: Dictionary containing lower bounds for the factor changes based off of credibility.
     :ivar bounds_upper: Dictionary containing upper bounds for the factor changes based off of credibility.
     :ivar res: The OptimizeResult containing information on the Differential Evolution result. See `this page <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.OptimizeResult.html#scipy.optimize.OptimizeResult>`_ for more information.
-    **Attributes**
-    
-    * ``x``: ``ndarray``
-    The solution of the optimization.
+            **``res`` Attributes**
 
-    * ``success``: ``bool``
-    Whether or not the optimizer exited successfully.
+            * ``x``: ``ndarray``
+            The solution of the optimization.
 
-    * ``status``: ``int``
-    Termination status of the optimizer. Its value depends on the underlying solver. Refer to message for details.
+            * ``success``: ``bool``
+            Whether or not the optimizer exited successfully.
 
-    * ``message``: ``str``
-    Description of the cause of the termination.
+            * ``status``: ``int``
+            Termination status of the optimizer. Its value depends on the underlying solver. Refer to message for details.
 
-    * ``fun``, ``jac``, ``hess``: ``ndarray``
-    Values of objective function, its Jacobian and its Hessian (if available). The Hessians may be approximations, see the documentation of the function in question.
+            * ``message``: ``str``
+            Description of the cause of the termination.
 
-    * ``hess_inv``: ``object``
-    Inverse of the objective function’s Hessian; may be an approximation. Not available for all solvers. The type of this attribute may be either np.ndarray or scipy.sparse.linalg.LinearOperator.
+            * ``fun``, ``jac``, ``hess``: ``ndarray``
+            Values of objective function, its Jacobian and its Hessian (if available). The Hessians may be approximations, see the documentation of the function in question.
 
-    * ``nfev``, ``njev``, ``nhev``: ``int``
-    Number of evaluations of the objective functions and of its Jacobian and Hessian.
+            * ``hess_inv``: ``object``
+            Inverse of the objective function’s Hessian; may be an approximation. Not available for all solvers. The type of this attribute may be either np.ndarray or scipy.sparse.linalg.LinearOperator.
 
-    * ``nit``: ``int``
-    Number of iterations performed by the optimizer.
+            * ``nfev``, ``njev``, ``nhev``: ``int``
+            Number of evaluations of the objective functions and of its Jacobian and Hessian.
 
-    * ``maxcv``: ``float``
-    The maximum constraint violation.
+            * ``nit``: ``int``
+            Number of iterations performed by the optimizer.
+
+            * ``maxcv``: ``float``
+            The maximum constraint violation.
 
 
     :type bounds_lower: dict
