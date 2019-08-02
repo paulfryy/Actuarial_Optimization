@@ -160,7 +160,7 @@ class Optimize:
     :type bounds: dict
     :type res: OptimizeResult
 
-    
+
 
     """
 
@@ -269,14 +269,13 @@ class Optimize:
 
         if new_AE < self.options.data._initialAE * 0.95 or new_AE > self.options.data._initialAE * 1.05:
             abs_dev += 1e10
+        self.niter += 1
+        if self.niter % 100 == 0:
+            print("Just finished deviation evaluation #:",self.niter)
         return abs_dev
 
-
     def __change_manual_expected(self, factorlist, factor):
-
-
         factor_dict = {}
-
         for i in range(len(self.options.data.levels[factor])):
             factor_dict[self.options.data.levels[factor][i]] = factorlist[i]
         self.options.data.df[self.options.data.expected] = self.options.data.df[self.options.data.expected]\
@@ -308,6 +307,9 @@ class Optimize:
                 new_AE - self.options.data.df[self.options.data.actual].values))
         if new_AE < self.options.data._initialAE * 0.95 or new_AE > self.options.data._initialAE * 1.05:
             abs_dev += 1e10
+        self.niter += 1
+        if self.niter % 100 == 0:
+            print("Just finished deviation evaluation #:",self.niter)
         return abs_dev
 
 
@@ -348,7 +350,7 @@ class Optimize:
             abs_dev += 1e10
         self.niter += 1
         if self.niter % 100 == 0:
-            print("Just finished iteration ",self.niter)
+            print("Just finished deviation evaluation #:",self.niter)
         return abs_dev
 
 
