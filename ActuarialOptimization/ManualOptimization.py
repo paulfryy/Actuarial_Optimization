@@ -155,7 +155,8 @@ class Optimize:
     :ivar bounds_lower: Dictionary containing lower bounds for the factor changes based off of credibility.
     :ivar bounds_upper: Dictionary containing upper bounds for the factor changes based off of credibility.
     :ivar res: The OptimizeResult containing information on the Differential Evolution result. See `this page <https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.OptimizeResult.html#scipy.optimize.OptimizeResult>`_ for more information.
-            **``res`` Attributes**
+
+            ** ``res`` Attributes**
 
             * ``x``: ``ndarray``
             The solution of the optimization.
